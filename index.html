@@ -1,0 +1,1176 @@
+<title>Token Economics in Multi-Model AI</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;1,9..144,300&family=Source+Sans+3:wght@400;600&display=swap">
+
+<style>
+/* Layout: long-form editorial — token costs as a data story */
+:root {
+  --bg: #f8f7f1;
+  --surface: #edecea;
+  --surface-2: #e1dfd6;
+  --fg: #1a1812;
+  --fg-2: #6b6a5e;
+  --fg-3: #9e9c90;
+  --accent: #bf7e1a;
+  --accent-dim: #f7ead6;
+  --danger: #c53030;
+  --danger-dim: #fde8e8;
+  --safe: #166534;
+  --safe-dim: #dcfce7;
+  --border: #d8d6cc;
+  --scholar: #4361d8;
+  --analyst: #2a8a4a;
+  --challenger: #c06a10;
+  --contrarian: #c03030;
+  --synth: #7c3aed;
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body: 'Source Sans 3', system-ui, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #111109;
+    --surface: #1c1c16;
+    --surface-2: #262620;
+    --fg: #f0ede0;
+    --fg-2: #9c9a8c;
+    --fg-3: #6a685e;
+    --accent: #d4921f;
+    --accent-dim: #2c1e08;
+    --danger: #ef4444;
+    --danger-dim: #2c0f0f;
+    --safe: #4ade80;
+    --safe-dim: #0a2010;
+    --border: #28281e;
+    --scholar: #7b96f9;
+    --analyst: #4ade80;
+    --challenger: #fbbf24;
+    --contrarian: #f87171;
+    --synth: #c4b5fd;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #111109;
+  --surface: #1c1c16;
+  --surface-2: #262620;
+  --fg: #f0ede0;
+  --fg-2: #9c9a8c;
+  --fg-3: #6a685e;
+  --accent: #d4921f;
+  --accent-dim: #2c1e08;
+  --danger: #ef4444;
+  --danger-dim: #2c0f0f;
+  --safe: #4ade80;
+  --safe-dim: #0a2010;
+  --border: #28281e;
+  --scholar: #7b96f9;
+  --analyst: #4ade80;
+  --challenger: #fbbf24;
+  --contrarian: #f87171;
+  --synth: #c4b5fd;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 0;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 21;
+  background: var(--bg);
+}
+
+/* nav */
+.nav {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+  padding: 12px max(24px, env(safe-area-inset-left, 0px));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.nav-author {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.nav-tag {
+  font-size: 0.73rem;
+  color: var(--fg-3);
+  letter-spacing: 0.04em;
+}
+
+/* wrapper */
+.wrapper {
+  max-width: 780px;
+  margin: 0 auto;
+  padding-bottom: 80px;
+}
+
+/* hero */
+.hero {
+  padding-block: 64px 52px;
+  border-bottom: 1px solid var(--border);
+}
+.eyebrow {
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 6.5vw, 3.6rem);
+  font-weight: 700;
+  line-height: 1.08;
+  text-wrap: balance;
+  letter-spacing: -0.025em;
+  margin-bottom: 24px;
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+.hero-lead {
+  font-size: 1.1rem;
+  color: var(--fg-2);
+  max-width: 58ch;
+  line-height: 1.65;
+  margin-bottom: 40px;
+}
+.stat-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+}
+.stat-pill {
+  display: flex;
+  flex-direction: column;
+  padding: 16px 28px 16px 0;
+  margin-right: 28px;
+  border-right: 1px solid var(--border);
+  gap: 2px;
+}
+.stat-pill:last-child { border-right: none; margin-right: 0; }
+.stat-num {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--fg);
+  font-variant-numeric: tabular-nums;
+}
+.stat-label {
+  font-size: 0.78rem;
+  color: var(--fg-3);
+  letter-spacing: 0.03em;
+}
+
+/* sections */
+.section {
+  padding-block: 56px;
+  border-bottom: 1px solid var(--border);
+}
+.section:last-of-type { border-bottom: none; }
+.section > .eyebrow { margin-bottom: 12px; }
+.section h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  font-weight: 700;
+  line-height: 1.2;
+  text-wrap: balance;
+  letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+.section > p {
+  color: var(--fg-2);
+  max-width: 62ch;
+  margin-bottom: 36px;
+}
+
+/* architecture */
+.arch-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  margin: 8px 0 0;
+}
+.arch-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 100%;
+}
+.arch-connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 0;
+  position: relative;
+  height: 32px;
+}
+.arch-connector svg {
+  height: 32px;
+  overflow: visible;
+}
+.model-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  min-width: 130px;
+  flex: 1;
+  max-width: 180px;
+}
+.model-chip-role {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+.model-chip-model {
+  font-size: 0.78rem;
+  color: var(--fg-3);
+  font-family: monospace;
+}
+.model-chip.scholar { border-color: var(--scholar); }
+.model-chip.scholar .model-chip-role { color: var(--scholar); }
+.model-chip.analyst { border-color: var(--analyst); }
+.model-chip.analyst .model-chip-role { color: var(--analyst); }
+.model-chip.challenger { border-color: var(--challenger); }
+.model-chip.challenger .model-chip-role { color: var(--challenger); }
+.model-chip.contrarian { border-color: var(--contrarian); }
+.model-chip.contrarian .model-chip-role { color: var(--contrarian); }
+
+.synth-chip {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 16px 28px;
+  border-radius: 8px;
+  background: var(--bg);
+  border: 2px solid var(--synth);
+  text-align: center;
+  min-width: 220px;
+}
+.synth-chip-role {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--synth);
+}
+.synth-chip-model {
+  font-size: 0.82rem;
+  color: var(--fg-2);
+}
+
+.arch-label {
+  font-size: 0.72rem;
+  color: var(--fg-3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--bg);
+  padding: 0 8px;
+}
+
+/* token anatomy */
+.anatomy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 8px;
+}
+@media (max-width: 540px) {
+  .anatomy-grid { grid-template-columns: 1fr; }
+}
+.anatomy-col {
+  padding: 24px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.anatomy-col-header {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fg-3);
+  margin-bottom: 18px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+.anatomy-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  gap: 12px;
+}
+.anatomy-row:last-of-type { border-bottom: none; }
+.anatomy-name {
+  font-size: 0.88rem;
+  color: var(--fg-2);
+  min-width: 0;
+}
+.anatomy-val {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--fg);
+  white-space: nowrap;
+}
+.anatomy-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 12px 0 0;
+  margin-top: 8px;
+  border-top: 2px solid var(--border);
+  gap: 12px;
+}
+.anatomy-total-label {
+  font-size: 0.73rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fg-2);
+}
+.anatomy-total-val {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+/* big tiles */
+.big-tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 14px;
+  margin: 32px 0 8px;
+}
+.big-tile {
+  padding: 22px 18px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.big-tile-num {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--fg);
+  margin-bottom: 6px;
+}
+.big-tile-label {
+  font-size: 0.78rem;
+  color: var(--fg-2);
+  line-height: 1.4;
+}
+.grand-total {
+  padding: 24px 28px;
+  background: var(--accent-dim);
+  border-radius: 10px;
+  border: 1.5px solid var(--accent);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+.grand-total-label {
+  font-size: 0.78rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.grand-total-num {
+  font-family: var(--font-display);
+  font-size: 2.6rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+/* calculator */
+.calculator {
+  background: var(--surface);
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  padding: 28px;
+  margin: 8px 0;
+}
+.calc-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  gap: 12px;
+}
+.calc-header-label {
+  font-size: 0.88rem;
+  color: var(--fg-2);
+}
+.calc-turns-display {
+  font-family: var(--font-display);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+.calc-turns-display span {
+  font-size: 0.85rem;
+  font-family: var(--font-body);
+  font-weight: 400;
+  color: var(--fg-3);
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  outline: none;
+  cursor: pointer;
+  margin-bottom: 28px;
+}
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  cursor: pointer;
+  box-shadow: 0 1px 4px rgba(0,0,0,.2);
+}
+input[type=range]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  cursor: pointer;
+}
+
+.chart-wrap {
+  width: 100%;
+  height: 200px;
+  position: relative;
+  margin-bottom: 8px;
+}
+.chart-wrap canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.chart-legend {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+}
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.78rem;
+  color: var(--fg-2);
+}
+.legend-line {
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.legend-dashed {
+  width: 18px;
+  height: 0;
+  border-top: 2px dashed currentColor;
+  flex-shrink: 0;
+}
+
+.calc-results {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+@media (max-width: 380px) { .calc-results { grid-template-columns: 1fr; } }
+.calc-result-box {
+  padding: 16px;
+  background: var(--bg);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.calc-result-num {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 5px;
+}
+.calc-result-label {
+  font-size: 0.77rem;
+  color: var(--fg-2);
+  line-height: 1.4;
+}
+.naive-color { color: var(--danger); }
+.opt-color { color: var(--safe); }
+
+/* strategies */
+.strategies {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 8px 0;
+}
+.strategy {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 20px;
+  align-items: start;
+  padding: 24px;
+  background: var(--surface);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.strategy-num {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 300;
+  font-style: italic;
+  color: var(--accent);
+  line-height: 1;
+  opacity: 0.7;
+  min-width: 1.5ch;
+}
+.strategy-title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+.strategy-body {
+  font-size: 0.9rem;
+  color: var(--fg-2);
+  line-height: 1.6;
+}
+.code-block {
+  margin-top: 12px;
+  font-family: 'Courier New', monospace;
+  font-size: 0.78rem;
+  padding: 10px 14px;
+  background: var(--surface-2);
+  border-radius: 6px;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  overflow-x: auto;
+  white-space: pre;
+  line-height: 1.5;
+}
+
+/* closing */
+.closing {
+  text-align: center;
+  padding-block: 60px;
+}
+.closing h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 5vw, 2.4rem);
+  font-weight: 700;
+  text-wrap: balance;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+  max-width: 18ch;
+  margin-inline: auto;
+}
+.closing p {
+  font-size: 1rem;
+  color: var(--fg-2);
+  max-width: 52ch;
+  margin: 0 auto 36px;
+  line-height: 1.7;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+.tag {
+  font-size: 0.75rem;
+  padding: 5px 13px;
+  border-radius: 100px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--fg-2);
+  letter-spacing: 0.03em;
+}
+
+/* footnote */
+.footnote {
+  padding: 24px max(24px, env(safe-area-inset-left, 0px));
+  border-top: 1px solid var(--border);
+  font-size: 0.78rem;
+  color: var(--fg-3);
+  text-align: center;
+  line-height: 1.6;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+</style>
+
+<nav class="nav">
+  <span class="nav-author">Prajwal Kulkarni</span>
+  <span class="nav-tag">Token Economics · Multi-Model AI</span>
+</nav>
+
+<main class="wrapper">
+
+  <!-- HERO -->
+  <div class="hero">
+    <p class="eyebrow">A data scientist's field notes</p>
+    <h1>Five models,<br>one question.<br><em>More tokens than you think.</em></h1>
+    <p class="hero-lead">I built a multi-model reasoning system that routes every question through four specialist AI models in parallel, then a fifth synthesizer consolidates the responses. Here's the token math — and what I learned about keeping it under control.</p>
+    <div class="stat-row">
+      <div class="stat-pill">
+        <span class="stat-num">~2,330</span>
+        <span class="stat-label">tokens per question</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-num">5</span>
+        <span class="stat-label">parallel API calls</span>
+      </div>
+      <div class="stat-pill">
+        <span class="stat-num">~43</span>
+        <span class="stat-label">questions/day (100K limit)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARCHITECTURE -->
+  <section class="section">
+    <p class="eyebrow">How it works</p>
+    <h2>The council pattern</h2>
+    <p>Every question goes to four specialist models running in parallel — each with a distinct reasoning persona. A fifth synthesizer reads all four responses and distills a single structured answer. The result is closer to how senior engineers actually think: from multiple angles, simultaneously.</p>
+
+    <div class="arch-flow">
+      <div class="arch-row">
+        <div class="model-chip scholar">
+          <span class="model-chip-role">The Scholar</span>
+          <span class="model-chip-model">gemini-2.5-pro</span>
+        </div>
+        <div class="model-chip analyst">
+          <span class="model-chip-role">The Analyst</span>
+          <span class="model-chip-model">gpt-4o</span>
+        </div>
+        <div class="model-chip challenger">
+          <span class="model-chip-role">The Challenger</span>
+          <span class="model-chip-model">llama-3.3-70b</span>
+        </div>
+        <div class="model-chip contrarian">
+          <span class="model-chip-role">The Contrarian</span>
+          <span class="model-chip-model">qwen3-32b</span>
+        </div>
+      </div>
+
+      <div class="arch-connector">
+        <svg viewBox="0 0 400 32" width="100%" preserveAspectRatio="none">
+          <line x1="12.5%" y1="0" x2="50%" y2="32" stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="37.5%" y1="0" x2="50%" y2="32" stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="62.5%" y1="0" x2="50%" y2="32" stroke="var(--border)" stroke-width="1.5"/>
+          <line x1="87.5%" y1="0" x2="50%" y2="32" stroke="var(--border)" stroke-width="1.5"/>
+        </svg>
+      </div>
+
+      <div class="synth-chip">
+        <span class="synth-chip-role">Synthesizer</span>
+        <span class="synth-chip-model">claude-sonnet + fallbacks</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TOKEN ANATOMY -->
+  <section class="section">
+    <p class="eyebrow">Token breakdown</p>
+    <h2>What's in every call</h2>
+    <p>Tokens split into two buckets: what you <em>send in</em> (input) and what the model <em>sends back</em> (output). Both cost money. Both compound with conversation history. Here's what a typical first question looks like.</p>
+
+    <div class="anatomy-grid">
+      <div class="anatomy-col">
+        <div class="anatomy-col-header">Input tokens (per council member)</div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">System prompt (persona)</span>
+          <span class="anatomy-val">~50</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Conversation history</span>
+          <span class="anatomy-val">0 (turn 1)</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">User question</span>
+          <span class="anatomy-val">~30</span>
+        </div>
+        <div class="anatomy-total">
+          <span class="anatomy-total-label">× 4 members</span>
+          <span class="anatomy-total-val">320</span>
+        </div>
+      </div>
+
+      <div class="anatomy-col">
+        <div class="anatomy-col-header">Output tokens (council)</div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Scholar response (≤200 words)</span>
+          <span class="anatomy-val">~200</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Analyst response</span>
+          <span class="anatomy-val">~200</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Challenger response</span>
+          <span class="anatomy-val">~200</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Contrarian response</span>
+          <span class="anatomy-val">~200</span>
+        </div>
+        <div class="anatomy-total">
+          <span class="anatomy-total-label">subtotal</span>
+          <span class="anatomy-total-val">800</span>
+        </div>
+      </div>
+
+      <div class="anatomy-col">
+        <div class="anatomy-col-header">Synthesizer input</div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Synthesizer system prompt</span>
+          <span class="anatomy-val">~80</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">All 4 council responses</span>
+          <span class="anatomy-val">~800</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Original question</span>
+          <span class="anatomy-val">~30</span>
+        </div>
+        <div class="anatomy-total">
+          <span class="anatomy-total-label">subtotal</span>
+          <span class="anatomy-total-val">910</span>
+        </div>
+      </div>
+
+      <div class="anatomy-col">
+        <div class="anatomy-col-header">Synthesizer output</div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Consensus section</span>
+          <span class="anatomy-val">~80</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Key insight</span>
+          <span class="anatomy-val">~70</span>
+        </div>
+        <div class="anatomy-row">
+          <span class="anatomy-name">Watch out + Bottom line</span>
+          <span class="anatomy-val">~150</span>
+        </div>
+        <div class="anatomy-total">
+          <span class="anatomy-total-label">subtotal</span>
+          <span class="anatomy-total-val">300</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grand-total" style="margin-top:20px;">
+      <span class="grand-total-label">Total per question (turn 1)</span>
+      <span class="grand-total-num">~2,330 tokens</span>
+    </div>
+  </section>
+
+  <!-- MATH TILES -->
+  <section class="section">
+    <p class="eyebrow">The arithmetic</p>
+    <h2>Where the tokens go</h2>
+    <p>The synthesizer is the most expensive single call — it pays to read all four council responses. But the real cost driver isn't any one call. It's what happens across multiple turns.</p>
+    <div class="big-tiles">
+      <div class="big-tile">
+        <div class="big-tile-num">320</div>
+        <div class="big-tile-label">Input tokens across 4 council calls (turn 1)</div>
+      </div>
+      <div class="big-tile">
+        <div class="big-tile-num">800</div>
+        <div class="big-tile-label">Output tokens from 4 council responses</div>
+      </div>
+      <div class="big-tile">
+        <div class="big-tile-num">910</div>
+        <div class="big-tile-label">Synthesizer input (reads all responses)</div>
+      </div>
+      <div class="big-tile">
+        <div class="big-tile-num">300</div>
+        <div class="big-tile-label">Synthesizer output (structured answer)</div>
+      </div>
+    </div>
+    <p style="font-size:0.85rem; color: var(--fg-3); margin-top:12px; margin-bottom:0;">
+      Note: system prompts cost 4× — each council member receives a full copy. A 100-token persona description = 400 tokens just to set the stage.
+    </p>
+  </section>
+
+  <!-- INTERACTIVE CALCULATOR -->
+  <section class="section">
+    <p class="eyebrow">The compounding problem</p>
+    <h2>History grows every turn</h2>
+    <p>In a multi-turn conversation, each council call carries the <em>full message history</em> as context. Turn 5 doesn't cost 5× turn 1 — it costs 6×. A 10-question learning session can exhaust most of a day's token budget.</p>
+
+    <div class="calculator">
+      <div class="calc-header">
+        <span class="calc-header-label">Questions in this session</span>
+        <span class="calc-turns-display" id="turns-display">1 <span>turn</span></span>
+      </div>
+      <input type="range" id="turns-slider" min="1" max="15" value="1" step="1">
+
+      <div class="chart-wrap">
+        <canvas id="chart-canvas"></canvas>
+      </div>
+
+      <div class="chart-legend">
+        <div class="legend-row">
+          <div class="legend-line" style="background: var(--danger);"></div>
+          Naïve (full history)
+        </div>
+        <div class="legend-row">
+          <div class="legend-line" style="background: var(--safe);"></div>
+          Optimized (2-turn window)
+        </div>
+        <div class="legend-row" style="color: var(--danger);">
+          <div class="legend-dashed"></div>
+          100K daily limit
+        </div>
+      </div>
+
+      <div class="calc-results">
+        <div class="calc-result-box">
+          <div class="calc-result-num naive-color" id="naive-total">2,330</div>
+          <div class="calc-result-label">Naïve cumulative tokens — full history every call</div>
+        </div>
+        <div class="calc-result-box">
+          <div class="calc-result-num opt-color" id="opt-total">2,330</div>
+          <div class="calc-result-label">Optimized tokens — 2-turn rolling history window</div>
+        </div>
+        <div class="calc-result-box">
+          <div class="calc-result-num" id="per-turn-naive" style="color:var(--fg);">2,330</div>
+          <div class="calc-result-label">Tokens for this turn (naïve) — grows each question</div>
+        </div>
+        <div class="calc-result-box">
+          <div class="calc-result-num" id="sessions-left" style="color:var(--fg);">43</div>
+          <div class="calc-result-label">Single-turn questions left in daily budget after this session</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- OPTIMIZATION PLAYBOOK -->
+  <section class="section">
+    <p class="eyebrow">The playbook</p>
+    <h2>Three moves that cut waste</h2>
+    <p>Multi-model reasoning is genuinely more expensive — but the cost is manageable once you understand where it goes. These three strategies matter most.</p>
+
+    <div class="strategies">
+      <div class="strategy">
+        <span class="strategy-num">1</span>
+        <div>
+          <div class="strategy-title">Compress your system prompts</div>
+          <p class="strategy-body">Every token in a system prompt is paid for <strong>four times</strong> — once per council member. A bloated 200-word persona description costs 1,067 tokens before a single word of the question. Tighten each prompt to its minimum useful length.
+          <br><br>A useful heuristic: cut every sentence that doesn't change model behavior. Test the short version — you'll often find the outputs are indistinguishable.</p>
+          <div class="code-block">Before: 200-token system prompt × 4 members = 800 tokens
+After:  50-token system prompt × 4 members = 200 tokens
+Saving: 600 tokens per question</div>
+        </div>
+      </div>
+
+      <div class="strategy">
+        <span class="strategy-num">2</span>
+        <div>
+          <div class="strategy-title">Use a rolling history window</div>
+          <p class="strategy-body">The naïve implementation sends the complete conversation history to every council member on every turn. At turn 10, each of the four models reads 9 previous exchanges before it even sees the new question.
+          <br><br>A 2-turn rolling window caps per-turn cost around ~5,000 tokens regardless of session length. You lose some long-range context — worth it for conversations that go deep.</p>
+          <div class="code-block"># instead of: messages = system + full_history + question
+# send:        messages = system + last_2_turns + question
+
+history_window = conversation_history[-4:]  # 2 turns = 4 messages</div>
+        </div>
+      </div>
+
+      <div class="strategy">
+        <span class="strategy-num">3</span>
+        <div>
+          <div class="strategy-title">Tier your models by question complexity</div>
+          <p class="strategy-body">Not every question deserves four frontier models. A quick factual lookup doesn't need the same firepower as analyzing a system architecture. You can classify questions before routing: simple → one small model at 10× lower cost, complex → full council.
+          <br><br>The fallback chain pattern also helps: primary model first, cheaper backup if it fails. You pay frontier prices only when needed.</p>
+          <div class="code-block">models = [
+    "gemini-2.5-pro",    # try first (expensive, capable)
+    "gemini-2.5-flash",  # fallback (cheaper, fast)
+    "gpt-4o-mini",       # last resort (minimal cost)
+]</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSING -->
+  <section class="section closing">
+    <p class="eyebrow">Takeaway</p>
+    <h2>Powerful doesn't have to mean wasteful.</h2>
+    <p>The ensemble pattern — multiple models, one synthesized answer — is genuinely useful for learning and reasoning. The token cost is real but predictable. Once you understand the compounding effect of history and the multiplier of system prompts, you can build multi-model workflows that scale within a budget.</p>
+    <div class="tags">
+      <span class="tag">#LLMEngineering</span>
+      <span class="tag">#TokenOptimization</span>
+      <span class="tag">#GenerativeAI</span>
+      <span class="tag">#MachineLearning</span>
+      <span class="tag">#DataScience</span>
+      <span class="tag">#BuildInPublic</span>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footnote">
+  Token estimates based on real calls during development. Counts vary by model and content.<br>
+  Built with FastAPI + React — multiple models integrated directly via their respective APIs.
+</footer>
+
+<script>
+// Token calculator logic
+const BASE = 2330;         // tokens for turn 1 (fresh conversation)
+const HISTORY_GROWTH = 1320; // extra tokens per prior turn in history
+const SYNTH_BASE = 1210;   // synthesizer cost stays roughly fixed
+const DAILY_LIMIT = 100000;
+const MAX_TURNS = 15;
+const OPT_WINDOW = 2;      // keep last N turns of history
+
+function tokensForTurn(n, optimized) {
+  const historyTurns = optimized ? Math.min(n - 1, OPT_WINDOW) : (n - 1);
+  return BASE + HISTORY_GROWTH * historyTurns;
+}
+
+function cumulativeTokens(turns, optimized) {
+  let total = 0;
+  for (let i = 1; i <= turns; i++) total += tokensForTurn(i, optimized);
+  return total;
+}
+
+function fmt(n) {
+  return n >= 1000 ? (n / 1000).toFixed(1) + 'K' : String(n);
+}
+
+function fmtFull(n) {
+  return n.toLocaleString();
+}
+
+// Chart drawing
+function getCSSVar(name) {
+  return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+}
+
+function drawChart(activeTurns) {
+  const canvas = document.getElementById('chart-canvas');
+  if (!canvas) return;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  canvas.width = Math.floor(rect.width * dpr);
+  canvas.height = Math.floor(rect.height * dpr);
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+
+  const W = rect.width;
+  const H = rect.height;
+  const pad = { top: 14, right: 16, bottom: 28, left: 48 };
+  const cw = W - pad.left - pad.right;
+  const ch = H - pad.top - pad.bottom;
+
+  // Precompute
+  const naiveData = [], optData = [];
+  let naiveSum = 0, optSum = 0;
+  for (let i = 1; i <= MAX_TURNS; i++) {
+    naiveSum += tokensForTurn(i, false);
+    optSum += tokensForTurn(i, true);
+    naiveData.push(naiveSum);
+    optData.push(optSum);
+  }
+
+  const maxVal = Math.max(naiveData[MAX_TURNS - 1], DAILY_LIMIT * 1.06);
+
+  const xPos = i => pad.left + (i / (MAX_TURNS - 1)) * cw;
+  const yPos = v => pad.top + ch - (v / maxVal) * ch;
+
+  // Grid lines
+  const gridColor = getCSSVar('--border');
+  const labelColor = getCSSVar('--fg-3');
+  ctx.font = `${10 * Math.min(dpr, 1.5)}px system-ui`;
+  ctx.font = '10px system-ui';
+
+  [0, 25000, 50000, 75000, 100000, 130000].forEach(v => {
+    if (v > maxVal * 1.02) return;
+    ctx.strokeStyle = gridColor;
+    ctx.lineWidth = 0.5;
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    ctx.moveTo(pad.left, yPos(v));
+    ctx.lineTo(pad.left + cw, yPos(v));
+    ctx.stroke();
+
+    ctx.fillStyle = labelColor;
+    ctx.textAlign = 'right';
+    ctx.fillText(v === 0 ? '0' : (v / 1000) + 'K', pad.left - 6, yPos(v) + 4);
+  });
+
+  // Daily limit dashed line
+  ctx.strokeStyle = getCSSVar('--danger');
+  ctx.lineWidth = 1.2;
+  ctx.setLineDash([5, 4]);
+  ctx.beginPath();
+  ctx.moveTo(pad.left, yPos(DAILY_LIMIT));
+  ctx.lineTo(pad.left + cw, yPos(DAILY_LIMIT));
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  // Optimized area fill (subtle)
+  ctx.fillStyle = getCSSVar('--safe-dim');
+  ctx.beginPath();
+  optData.forEach((v, i) => {
+    const px = xPos(i), py = yPos(v);
+    i === 0 ? ctx.moveTo(px, py) : ctx.lineTo(px, py);
+  });
+  ctx.lineTo(xPos(MAX_TURNS - 1), yPos(0));
+  ctx.lineTo(xPos(0), yPos(0));
+  ctx.closePath();
+  ctx.fill();
+
+  // Lines
+  function drawLine(data, color, width) {
+    ctx.strokeStyle = color;
+    ctx.lineWidth = width;
+    ctx.lineJoin = 'round';
+    ctx.setLineDash([]);
+    ctx.beginPath();
+    data.forEach((v, i) => {
+      i === 0 ? ctx.moveTo(xPos(i), yPos(v)) : ctx.lineTo(xPos(i), yPos(v));
+    });
+    ctx.stroke();
+  }
+
+  drawLine(optData, getCSSVar('--safe'), 2);
+  drawLine(naiveData, getCSSVar('--danger'), 2.5);
+
+  // Active turn dots
+  const ai = Math.min(activeTurns - 1, MAX_TURNS - 1);
+  [[naiveData, getCSSVar('--danger')], [optData, getCSSVar('--safe')]].forEach(([data, color]) => {
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.arc(xPos(ai), yPos(data[ai]), 5.5, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillStyle = getCSSVar('--bg');
+    ctx.beginPath();
+    ctx.arc(xPos(ai), yPos(data[ai]), 2.5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // X axis labels
+  ctx.fillStyle = labelColor;
+  ctx.textAlign = 'center';
+  [1, 3, 5, 7, 10, 13, 15].forEach(n => {
+    ctx.fillText(n, xPos(n - 1), H - pad.bottom + 16);
+  });
+  ctx.fillStyle = labelColor;
+  ctx.textAlign = 'left';
+  ctx.fillText('turns →', xPos(MAX_TURNS - 1) - 32, H - pad.bottom + 16);
+}
+
+function update(turns) {
+  // Display turns
+  const td = document.getElementById('turns-display');
+  td.innerHTML = turns + ' <span>' + (turns === 1 ? 'turn' : 'turns') + '</span>';
+
+  // Cumulative
+  const naiveCum = cumulativeTokens(turns, false);
+  const optCum = cumulativeTokens(turns, true);
+
+  document.getElementById('naive-total').textContent = fmtFull(naiveCum);
+  document.getElementById('opt-total').textContent = fmtFull(optCum);
+
+  // Per turn (naive)
+  const perTurnNaive = tokensForTurn(turns, false);
+  document.getElementById('per-turn-naive').textContent = fmtFull(perTurnNaive);
+
+  // Questions left in daily budget
+  const remaining = Math.max(0, DAILY_LIMIT - naiveCum);
+  const singleQ = BASE; // first turn cost
+  const questionsLeft = Math.floor(remaining / singleQ);
+  document.getElementById('sessions-left').textContent = questionsLeft;
+
+  // Redraw chart
+  drawChart(turns);
+}
+
+// Wire up slider
+const slider = document.getElementById('turns-slider');
+slider.addEventListener('input', () => update(parseInt(slider.value)));
+
+// Initial render
+update(1);
+
+// Redraw on resize
+let resizeTimer;
+window.addEventListener('resize', () => {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => update(parseInt(slider.value)), 100);
+});
+
+// Redraw if color scheme changes
+const mq = window.matchMedia('(prefers-color-scheme: dark)');
+mq.addEventListener('change', () => update(parseInt(slider.value)));
+</script>
